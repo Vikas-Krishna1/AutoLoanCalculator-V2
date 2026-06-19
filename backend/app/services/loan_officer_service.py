@@ -19,3 +19,6 @@ def create_loan_officer(
         phone,
         employee_number
     )
+##Get allApplications by officer
+def get_all_applications_by_officer(db: Session, loan_officer_id: int):
+    return LoanOfficerRepository.get_all_applications_by_officer(db, loan_officer_id)

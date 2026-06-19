@@ -1,5 +1,6 @@
 from sqlalchemy.orm import Session
 from app.models.LoanOfficer import LoanOfficer
+from app.models.LoanApplication import LoanApplication
 
 
 class LoanOfficerRepository:
@@ -27,3 +28,17 @@ class LoanOfficerRepository:
         db.refresh(officer)
 
         return officer
+    ## Get Loan Officer
+    @staticmethod
+    def get_by_id(db: Session, loan_officer_id: int):
+        return db.query(LoanOfficer).filter(
+            LoanOfficer.loan_officer_id == loan_officer_id
+        ).first()
+    ##Get all Loan Application form a Loan Officer
+    @staticmethod
+    def get_all_applications_by_officer(db: Session, loan_officer_id: int):
+        r = db.query(LoanApplication).filter(
+            LoanApplication.loan_officer_id == loan_officer_id
+        ).all()
+
+        return r

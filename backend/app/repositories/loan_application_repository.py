@@ -116,3 +116,38 @@ class LoanApplicationRepository:
             db.refresh(application)
 
         return application
+    ##Get Under Review Applications
+    def get_under_review(db: Session):
+        return db.query(LoanApplication).filter(
+            LoanApplication.status == "UNDER_REVIEW"
+        ).all()
+
+    ##Get Approved Applications
+    def get_approved(db: Session):
+        return db.query(LoanApplication).filter(
+            LoanApplication.status == "APPROVED"
+        ).all()
+
+    ##Get Denied Applications
+    def get_denied(db: Session):
+        return db.query(LoanApplication).filter(
+            LoanApplication.status == "DENIED"
+        ).all()
+    
+    ## Get Application by ID
+    def get_by_id(db: Session, id: int):
+        return db.query(LoanApplication).filter(
+            LoanApplication.application_id == id
+        ).first()
+
+    ## Get Application by ID
+    def get_by_vehicle_id(db: Session, id: int):
+        return db.query(LoanApplication).filter(
+            LoanApplication.vehicle_id == id
+        ).first()
+
+    ## Get Application by ID
+    def get_by_applicant_id(db: Session, id: int):
+        return db.query(LoanApplication).filter(
+            LoanApplication.applicant_id == id
+        ).first()

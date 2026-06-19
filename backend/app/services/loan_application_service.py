@@ -46,6 +46,7 @@ def create_loan_application(
         loan_amount,
         monthly_payment
     )
+##Officer Services
 def assign_officer(db: Session, application_id: int, officer_id: int):
 
     return LoanApplicationRepository.assign_officer(db, application_id, officer_id)
@@ -57,3 +58,32 @@ def approve_application( db: Session,application_id: int, officer_id: int, notes
 def deny_application( db: Session,application_id: int, officer_id: int, notes: str):
 
     return (LoanApplicationRepository.deny_application( db,application_id,officer_id,  notes))
+##Get all  Pending Applications
+def get_pending_applications(db: Session):
+
+    return LoanApplicationRepository.get_by_pending(db)
+
+def get_under_review(db: Session):
+
+    return LoanApplicationRepository.get_under_review(db)
+def get_approved(db: Session):
+
+    return LoanApplicationRepository.get_approved(db)
+
+def get_denied(db: Session):
+
+    return LoanApplicationRepository.get_denied(db)
+##get_by_id
+def get_loanApplication_by_id_service(db: Session, id: int):
+
+    return LoanApplicationRepository.get_by_id(db, id)
+##get_by_applicant_id
+def get_loanApplication_by_applicant_id_service(db: Session, id: int):
+
+    return LoanApplicationRepository.get_by_applicant_id(db, id)
+
+##get_by_vehicle_id
+def get_loanApplication_by_vehicle_id_service(db: Session, id: int):
+
+    return LoanApplicationRepository.get_by_vehicle_id(db, id)
+

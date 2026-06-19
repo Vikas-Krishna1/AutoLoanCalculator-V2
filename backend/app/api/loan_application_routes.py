@@ -7,7 +7,7 @@ from app.services.loan_application_service import create_loan_application
 from app.schemas.loan_assignment_schema import AssignOfficerRequest
 from app.services.loan_application_service import assign_officer
 from app.schemas.loan_review_schema import ReviewRequest
-from app.services.loan_application_service import approve_application, deny_application
+from app.services.loan_application_service import approve_application, deny_application, get_pending_applications, get_approved, get_denied, get_under_review, get_loanApplication_by_id_service, get_loanApplication_by_vehicle_id_service, get_loanApplication_by_applicant_id_service
 
 router = APIRouter()
 
@@ -86,3 +86,33 @@ def deny_loan(
         request.officer_id,
         request.review_notes
 )
+## Get all Pending applications
+@router.get("/loan/pending")
+def getpending_applications(db: Session = Depends(get_db)):
+    return get_pending_applications(db)
+##Get all Aproved applications
+@router.get("/loan/approved")
+def getapproved_applications(db: Session = Depends(get_db)):
+    return get_approved(db)
+##Get all Denied applications
+@router.get("/loan/denied")
+def getdenied_applications(db: Session = Depends(get_db)):
+    return get_denied(db)
+##Get all under review applications
+@router.get("/loan/review")
+def getunderreview_applications(db: Session = Depends(get_db)):
+    return get_under_review(db)
+
+@router.get("/loan/{application_id}")
+def get_loanApplication_by_id(application_id: int, db: Session = Depends(get_db)):
+    return get_loanApplication_by_id_service(db, application_id)
+
+@router.get("/loan/vehicle/{vehicle_id}")
+def get_loanApplication_by_vehicle_id(vehicle_id: int, db: Session = Depends(get_db)):
+    return get_loanApplication_by_vehicle_id_service(db, vehicle_id)
+
+@router.get("/loan/applicant/{applicant_id}")
+def get_loanApplication_by_applicant_id(applicant_id: int, db: Session = Depends(get_db)):
+    return get_loanApplication_by_applicant_id_service(db, applicant_id)
+
+

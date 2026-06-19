@@ -32,3 +32,6 @@ class ApplicantRepository:
         db.refresh(applicant)
 
         return applicant
+    ##Get Applications by Applicant ID
+    def get_Application_by_applicant_id(db: Session, applicant_id: int):
+        return db.query(Applicant).filter(Applicant.applicant_id == applicant_id).all()

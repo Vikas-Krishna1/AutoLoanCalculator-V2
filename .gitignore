@@ -1,0 +1,82 @@
+# Java
+*.class
+
+# VS Code
+.vscode/
+
+# MacOS
+.DS_Store
+
+# Logs
+*.log
+
+# Build folders
+bin/
+out/
+target/
+
+# IntelliJ
+.idea/
+
+# Eclipse
+.settings/
+.project
+.classpath
+
+# Temporary files
+*.tmp
+# XML
+.XML
+#env
+.env
+# Maven
+target/
+
+# Java packaging
+dist/
+jdeploy-bundle/
+runtime*/
+input/
+
+# macOS
+.DS_Store
+
+# Environment variables
+.env
+
+# Generated files
+*.jar
+*.app
+*.command
+# Build folders
+target/
+dist/
+jdeploy-bundle/
+input/
+
+# Runtime
+runtime/
+runtime 2/
+
+# Maven output
+*.jar
+
+# Environment variables
+.env
+
+# macOS
+.DS_Store
+# Maven
+target/
+
+# macOS
+.DS_Store
+
+# Generated application bundles
+dist/
+input/
+jdeploy-bundle/
+
+*.app
+#Property files
+.properties

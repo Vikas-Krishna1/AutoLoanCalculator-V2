@@ -1,5 +1,7 @@
 from sqlalchemy.orm import Session
 from app.models.LoanApplication import LoanApplication
+from app.schemas.loan_applicaation_schema import LoanApplicationCreate
+
 
 class LoanApplicationRepository:
 
@@ -42,4 +44,37 @@ class LoanApplicationRepository:
         db.commit()
         db.refresh(loan)
 
+        return loan
+    
+    @staticmethod
+    def get_all(db: Session):
+        return db.query(LoanApplication).all()
+    @staticmethod
+    def get_by_id(db: Session, id: int):
+        return db.query(LoanApplication).filter(
+            LoanApplication.loan_id == id
+        ).first()
+    @staticmethod
+    def get_by_applicant_id(db: Session, id: int):
+        return db.query(LoanApplication).filter(
+            LoanApplication.applicant_id == id
+        ).first()
+    @staticmethod
+    def get_by_pending(db: Session):
+        return db.query(LoanApplication).filter(
+            LoanApplication.status == "Pending"
+        ).first()
+    @staticmethod
+    def get_by_officer_id(db: Session, id: int):
+        return db.query(LoanApplication).filter(
+        LoanApplication.officer_id == id
+    ).first()
+    @staticmethod
+    def assign_officer(db: Session, application_id: int, officer_id: int):
+        loan = db.query(LoanApplication).filter(
+        LoanApplication.application_id == application_id
+    ).first()
+        loan.officer_id = officer_id
+        db.commit()
+        db.refresh(loan)
         return loan

@@ -6,6 +6,7 @@ from sqlalchemy.sql.sqltypes import TIMESTAMP
 class LoanApplication(Base):
     __tablename__ = "loan_application"
 
+    
     application_id = Column(Integer, primary_key=True)
 
     applicant_id = Column(Integer)

@@ -15,7 +15,7 @@ def create_loan_application(
     down_payment: float,
     interest_rate: float,
     loan_term: int
-    
+
 ):
 
     loan = AutoLoanRequest(
@@ -46,3 +46,6 @@ def create_loan_application(
         loan_amount,
         monthly_payment
     )
+def assign_officer(db: Session, application_id: int, officer_id: int):
+
+    return LoanApplicationRepository.assign_officer(db, application_id, officer_id)

@@ -52,29 +52,67 @@ class LoanApplicationRepository:
     @staticmethod
     def get_by_id(db: Session, id: int):
         return db.query(LoanApplication).filter(
-            LoanApplication.loan_id == id
-        ).first()
+            LoanApplication.application_id == id
+        ).all()
     @staticmethod
     def get_by_applicant_id(db: Session, id: int):
         return db.query(LoanApplication).filter(
             LoanApplication.applicant_id == id
-        ).first()
+        ).all()
     @staticmethod
     def get_by_pending(db: Session):
         return db.query(LoanApplication).filter(
             LoanApplication.status == "Pending"
-        ).first()
+        ).all()
     @staticmethod
     def get_by_officer_id(db: Session, id: int):
         return db.query(LoanApplication).filter(
-        LoanApplication.officer_id == id
-    ).first()
+        LoanApplication.loan_officer == id
+    ).all()
     @staticmethod
     def assign_officer(db: Session, application_id: int, officer_id: int):
         loan = db.query(LoanApplication).filter(
         LoanApplication.application_id == application_id
     ).first()
-        loan.officer_id = officer_id
+        loan.loan_officer_id = officer_id
+
+        if loan.status == "Pending":
+            loan.status = "UNDER_REVIEW"
         db.commit()
         db.refresh(loan)
         return loan
+    @staticmethod
+    def approve_application( db: Session,application_id: int,officer_id: int,notes: str):
+
+        application = (
+        LoanApplicationRepository.get_by_id(db,application_id))
+
+        if application:
+
+            application.loan_officer_id = officer_id
+            application.reviewed_by = officer_id
+            application.review_notes = notes
+            application.status = "APPROVED"
+
+            db.commit()
+            db.refresh(application)
+
+        return application
+
+    @staticmethod
+    def deny_application( db: Session,application_id: int,officer_id: int,notes: str):
+
+        application = (
+        LoanApplicationRepository.get_by_id(db,application_id))
+
+        if application:
+
+            application.loan_officer_id = officer_id
+            application.reviewed_by = officer_id
+            application.review_notes = notes
+            application.status = "DENIED"
+
+            db.commit()
+            db.refresh(application)
+
+        return application

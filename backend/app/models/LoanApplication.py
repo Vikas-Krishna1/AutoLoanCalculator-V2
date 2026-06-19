@@ -24,6 +24,8 @@ class LoanApplication(Base):
 
     loan_amount = Column(Float)
     monthly_payment = Column(Float)
+    review_notes = Column(String(255))
+    reviewed_by = Column(Integer)
 
     status = Column(String(20))
 

@@ -49,3 +49,11 @@ def create_loan_application(
 def assign_officer(db: Session, application_id: int, officer_id: int):
 
     return LoanApplicationRepository.assign_officer(db, application_id, officer_id)
+
+def approve_application( db: Session,application_id: int, officer_id: int, notes: str):
+
+    return (LoanApplicationRepository.approve_application( db,application_id,officer_id,  notes))
+
+def deny_application( db: Session,application_id: int, officer_id: int, notes: str):
+
+    return (LoanApplicationRepository.deny_application( db,application_id,officer_id,  notes))

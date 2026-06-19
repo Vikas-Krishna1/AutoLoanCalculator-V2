@@ -6,6 +6,8 @@ from app.schemas.loan_applicaation_schema import LoanApplicationCreate
 from app.services.loan_application_service import create_loan_application
 from app.schemas.loan_assignment_schema import AssignOfficerRequest
 from app.services.loan_application_service import assign_officer
+from app.schemas.loan_review_schema import ReviewRequest
+from app.services.loan_application_service import approve_application, deny_application
 
 router = APIRouter()
 
@@ -52,3 +54,35 @@ def assign_loan_officer(
         request.officer_id
 
     )
+@router.put("/loan/{application_id}/approve")
+def approve_loan(
+
+    application_id: int,
+    request: ReviewRequest,
+    db: Session = Depends(get_db)
+
+):
+
+    return approve_application(
+
+        db,
+        application_id,
+        request.officer_id,
+        request.review_notes
+
+    )
+@router.put("/loan/{application_id}/deny")
+def deny_loan(
+
+    application_id: int,
+    request: ReviewRequest,
+    db: Session = Depends(get_db)
+
+):
+
+    return deny_application(
+        db,
+        application_id,
+        request.officer_id,
+        request.review_notes
+)

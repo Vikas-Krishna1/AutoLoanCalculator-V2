@@ -176,23 +176,42 @@ public class ApplicationHistoryView extends JFrame
                 continue;
             }
 
-            Vehicle vehicle =
-                    VehicleApiClient.getVehicleById(
-                            application.getVehicle_id());
+            Vehicle vehicle = null;
 
-            String vehicleName =
-                    vehicle.getYear()
-                    + " "
-                    + vehicle.getMake()
-                    + " "
-                    + vehicle.getModel();
+            try
+            {
+                vehicle =
+                        VehicleApiClient.getVehicleById(
+                                application.getVehicle_id());
+            }
+            catch(Exception ex)
+            {
+                ex.printStackTrace();
+            }
+
+            String vehicleName = "N/A";
+
+            if(vehicle != null)
+            {
+                vehicleName =
+                        vehicle.getYear()
+                        + " "
+                        + vehicle.getMake()
+                        + " "
+                        + vehicle.getModel();
+            }
+
+            String applicationDate =
+                    application.getApplication_date() == null
+                    ? "N/A"
+                    : application.getApplication_date().toString();
 
             tableModel.addRow(
                     new Object[]
                     {
-                            application.getApplication_date(),
+                            applicationDate,
 
-                            application.getApplicant_id(),
+                            application.getApplication_id(),
 
                             applicant.getFullName(),
 

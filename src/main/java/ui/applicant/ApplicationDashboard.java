@@ -9,6 +9,8 @@ package ui.applicant;
 //======================================
 
 //Imports
+import ui.*;
+import ui.login.LoginView;
 import api.*;
 import models.*;
 import javax.swing.*;
@@ -35,6 +37,8 @@ public class ApplicationDashboard extends JFrame
     private JButton historyButton;
     //Back Button
     private JButton backButton;
+    private JButton logoutButton;
+
     //Database Manager connection
 
     public ApplicationDashboard(int userId)
@@ -107,10 +111,12 @@ public class ApplicationDashboard extends JFrame
 
         viewButton =
                 new JButton("View Details");
+        logoutButton = new JButton("Logout");
 
         buttonPanel.add(refreshButton);
         buttonPanel.add(newApplicationButton);
         buttonPanel.add(viewButton);
+        buttonPanel.add(logoutButton);
 
         historyButton = new JButton("Application History");
         buttonPanel.add(historyButton);
@@ -123,6 +129,11 @@ public class ApplicationDashboard extends JFrame
 
         refreshButton.addActionListener(
                 e -> loadApplications());
+        logoutButton.addActionListener(e -> {
+                
+        dispose();
+        new LoginView();
+    });
 
         newApplicationButton.addActionListener(e -> 
                 {
@@ -138,6 +149,7 @@ public class ApplicationDashboard extends JFrame
 
         setVisible(true);
     }
+    
     
 
     private void loadApplications()

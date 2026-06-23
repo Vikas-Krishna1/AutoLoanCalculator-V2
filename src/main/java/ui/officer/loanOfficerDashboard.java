@@ -1,7 +1,7 @@
 package ui.officer;
 import api.*;
 import models.*;
-import models.LoanApplication;
+
 import java.util.List;
 import javax.swing.*;
 import javax.xml.crypto.Data;
@@ -23,20 +23,27 @@ public class loanOfficerDashboard extends JFrame
     private JButton refreshButton;
     private JFrame QueueView;
     private int officerId;
+    private int user_id;
 
 
     public loanOfficerDashboard(int user_id,int officerId, JFrame QueueView)
     {
+        this.user_id = user_id;
         this.officerId = officerId;
         this.QueueView = QueueView;
         try{
-                LoanOfficer officer = LoanOfficerApiClient.getLoanOfficerByUserId(user_id);
-                int loan_officer_id = officer.getLoan_officer_id();
+                System.out.println("User ID: " + user_id);
+
+                LoanOfficer officerID =
+                 LoanOfficerApiClient.getLoanOfficerByUserId(user_id);
+                System.out.println("Officer object: " + officerID);
+                int loan_officer_id = officerID.getLoan_officer_id();
                 this.officerId = loan_officer_id;
         }catch(Exception e){
-                System.out.println(e);
+        System.out.println(e.getMessage());
+
         }
-        
+
         setTitle("Loan Officer Dashboard");
         setSize(800, 600);
         setLocationRelativeTo(null);
@@ -163,14 +170,14 @@ public class loanOfficerDashboard extends JFrame
 
         queueButton.addActionListener(e ->
         {
-            // TODO
-            new ApplicationQueueView(officerId);
+
+            new ApplicationQueueView(user_id);
         });
 
         myApplicationsButton.addActionListener(e ->
         {
             this.setVisible(false);
-            new MyApplicationsView(1,this);
+            new MyApplicationsView(officerId,this);
         });
 
         exportButton = new JButton("Export PDF");

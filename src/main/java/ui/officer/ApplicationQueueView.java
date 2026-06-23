@@ -48,14 +48,30 @@ public class ApplicationQueueView extends JFrame
     public ApplicationQueueView(int user_id)
     {
         this.user_id = user_id;
-        LoanOfficer officerID = null;
-        try{
-            officerID = LoanOfficerApiClient.getLoanOfficerByUserId(user_id);
-        }catch(Exception e){
-            System.out.println(e.getMessage());
-        }
-        officerId = officerID.getLoan_officer_id();
-        System.out.println("Officer ID :" + officerId);
+
+LoanOfficer officerID = null;
+
+try {
+    officerID =
+        LoanOfficerApiClient.getLoanOfficerByUserId(user_id);
+
+    System.out.println("User ID = " + user_id);
+    System.out.println("Officer = " + officerID);
+
+} catch(Exception e) {
+    e.printStackTrace();
+}
+
+if(officerID == null) {
+    JOptionPane.showMessageDialog(
+        this,
+        "No loan officer found for user ID " + user_id
+    );
+    return;
+}
+
+officerId = officerID.getLoan_officer_id();
+System.out.println("Officer ID = " + officerId);
         welcomeLabel =
         new JLabel(
                 "Welcome, " + Session.getCurrentUser().getUsername());

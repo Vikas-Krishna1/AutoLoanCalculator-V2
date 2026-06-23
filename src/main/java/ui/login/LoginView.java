@@ -1,4 +1,5 @@
 package ui.login;
+
 import api.UserApiClient;
 import models.User;
 import ui.*;
@@ -8,11 +9,13 @@ import ui.officer.ApplicationQueueView;
 import ui.register.registerView;
 import javax.swing.*;
 import java.awt.*;
+
 public class LoginView extends JFrame {
         private JTextField usernameField;
         private JPasswordField passwordField;
         private JButton loginButton;
         private JButton registerButton;
+
         public LoginView() {
                 setTitle("Auto Loan System Login");
                 setSize(450, 300);
@@ -42,7 +45,7 @@ public class LoginView extends JFrame {
                                 gbc);
                 usernameField = new JTextField(15);
                 gbc.gridx = 1;
-                panel.add(usernameField,gbc);
+                panel.add(usernameField, gbc);
                 // Password
 
                 gbc.gridx = 0;
@@ -66,16 +69,16 @@ public class LoginView extends JFrame {
 
                 gbc.gridx = 0;
                 gbc.gridy = 3;
-                panel.add(loginButton,gbc);
+                panel.add(loginButton, gbc);
                 // Register Button
                 registerButton = new JButton("Register");
                 gbc.gridx = 1;
-                panel.add(registerButton,gbc);
+                panel.add(registerButton, gbc);
                 add(panel);
 
                 // Login Listener
 
-        loginButton.addActionListener(e -> {
+                loginButton.addActionListener(e -> {
                         loginUser();
                 });
 

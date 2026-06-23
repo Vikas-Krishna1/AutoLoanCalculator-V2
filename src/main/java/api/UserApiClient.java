@@ -218,8 +218,6 @@ System.out.println(
             client.send(
                     request,
                     HttpResponse.BodyHandlers.ofString());
-                    System.out.println("Status: " + response.statusCode());
-System.out.println("Body: " + response.body());
 
     return response.statusCode() == 200;
 }

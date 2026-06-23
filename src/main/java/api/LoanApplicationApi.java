@@ -368,8 +368,6 @@ public static LoanApplication getApplicationById(int applicationId)
 
         if(response.statusCode() == 200)
         {
-                System.out.println("Status code = " + response.statusCode());
-System.out.println("Response body = " + response.body());
             return mapper.readValue(
                     response.body(),
                     LoanApplication.class
@@ -402,10 +400,6 @@ public static List<LoanApplication> getApplicationsByApplicant(int applicantId)
                 client.send(
                         request,
                         HttpResponse.BodyHandlers.ofString());
-
-        System.out.println("Status code = " + response.statusCode());
-        System.out.println("Response body = " + response.body());
-
         if(response.statusCode() == 200)
         {
             List<LoanApplication> applications =

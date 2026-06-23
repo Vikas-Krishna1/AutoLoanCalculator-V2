@@ -1,5 +1,6 @@
 package ui.applicant;
 //======================================
+
 //APPLICANT APPLICATION DASHBOARD
 //This class represents the applicant application dashboard
 //It allows the applicant to view their loan applications
@@ -19,223 +20,189 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 import ui.table.*;
-public class ApplicationDashboard extends JFrame
-{
-    //Feilds, and variables and UI components
-    private int userId;
-    //Table Components
-    private JTable applicationTable;
-    private DefaultTableModel tableModel;
-    //Button Components
-    //Refresh Button
-    private JButton refreshButton;
-    //New Application Button
-    private JButton newApplicationButton;
-    //View Button
-    private JButton viewButton;
-    //Application History Button
-    private JButton historyButton;
-    //Back Button
-    private JButton backButton;
-    private JButton logoutButton;
 
-    //Database Manager connection
+public class ApplicationDashboard extends JFrame {
+        // Feilds, and variables and UI components
+        private int userId;
+        // Table Components
+        private JTable applicationTable;
+        private DefaultTableModel tableModel;
+        // Button Components
+        // Refresh Button
+        private JButton refreshButton;
+        // New Application Button
+        private JButton newApplicationButton;
+        // View Button
+        private JButton viewButton;
+        // Application History Button
+        private JButton historyButton;
+        // Back Button
+        private JButton backButton;
+        private JButton logoutButton;
 
-    public ApplicationDashboard(int userId)
-    {
-        //Constructor-> Takes in user_id as a parameter 
-        //and sets it to the userId field
-        //Sets the title, size, location, and close operation
-        this.userId = userId;
+        // Database Manager connection
 
-        setTitle("Applicant Dashboard");
-        setSize(900,600);
-        setLocationRelativeTo(null);
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        public ApplicationDashboard(int userId) {
+                // Constructor-> Takes in user_id as a parameter
+                // and sets it to the userId field
+                // Sets the title, size, location, and close operation
+                this.userId = userId;
 
-        setLayout(new BorderLayout());
-        
+                setTitle("Applicant Dashboard");
+                setSize(900, 600);
+                setLocationRelativeTo(null);
+                setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
-        JLabel title =
-                new JLabel(
-                        "My Loan Applications",
-                        SwingConstants.CENTER);
+                setLayout(new BorderLayout());
 
-        title.setFont(
-                new Font(
-                        "Arial",
-                        Font.BOLD,
-                        22));
+                JLabel title = new JLabel(
+                                "My Loan Applications",
+                                SwingConstants.CENTER);
 
-        add(title, BorderLayout.NORTH);
+                title.setFont(
+                                new Font(
+                                                "Arial",
+                                                Font.BOLD,
+                                                22));
 
-        String[] columns =
-        {
-            "Application ID",
-            "Applicant",
-            "Vehicle",
-            "Loan Amount",
-            "Monthly Payment",
-            "Status"
-        };
+                add(title, BorderLayout.NORTH);
 
-        tableModel =
-                new DefaultTableModel(columns,0)
-                {
-                    @Override
-                    public boolean isCellEditable(
-                            int row,
-                            int column)
-                    {
-                        return false;
-                    }
+                String[] columns = {
+                                "Application ID",
+                                "Applicant",
+                                "Vehicle",
+                                "Loan Amount",
+                                "Monthly Payment",
+                                "Status"
                 };
 
-        applicationTable =
-                new JTable(tableModel);
-        applicationTable.getColumnModel().getColumn(1).setCellRenderer(new StatusRenderer());
-        
+                tableModel = new DefaultTableModel(columns, 0) {
+                        @Override
+                        public boolean isCellEditable(
+                                        int row,
+                                        int column) {
+                                return false;
+                        }
+                };
 
-        add(
-                new JScrollPane(applicationTable),
-                BorderLayout.CENTER);
+                applicationTable = new JTable(tableModel);
+                applicationTable.getColumnModel().getColumn(1).setCellRenderer(new StatusRenderer());
 
-        JPanel buttonPanel =
-                new JPanel();
+                add(
+                                new JScrollPane(applicationTable),
+                                BorderLayout.CENTER);
 
-        refreshButton =
-                new JButton("Refresh");
+                JPanel buttonPanel = new JPanel();
 
-        newApplicationButton =
-                new JButton("New Application");
+                refreshButton = new JButton("Refresh");
 
-        viewButton =
-                new JButton("View Details");
-        logoutButton = new JButton("Logout");
+                newApplicationButton = new JButton("New Application");
 
-        buttonPanel.add(refreshButton);
-        buttonPanel.add(newApplicationButton);
-        buttonPanel.add(viewButton);
-        buttonPanel.add(logoutButton);
+                viewButton = new JButton("View Details");
+                logoutButton = new JButton("Logout");
 
-        historyButton = new JButton("Application History");
-        buttonPanel.add(historyButton);
-        historyButton.addActionListener(e -> 
-            
-            new ApplicationHistoryView(userId,this)
-        );
+                buttonPanel.add(refreshButton);
+                buttonPanel.add(newApplicationButton);
+                buttonPanel.add(viewButton);
+                buttonPanel.add(logoutButton);
 
-        add(buttonPanel, BorderLayout.SOUTH);
+                historyButton = new JButton("Application History");
+                buttonPanel.add(historyButton);
+                historyButton.addActionListener(e ->
 
-        refreshButton.addActionListener(
-                e -> loadApplications());
-        logoutButton.addActionListener(e -> {
-                
-        dispose();
-        new LoginView();
-    });
+                new ApplicationHistoryView(userId, this));
 
-        newApplicationButton.addActionListener(e -> 
-                {
-                System.out.println("Opening new application form");
-                new LoanForm(userId);
-                System.out.println("New application form opened");
+                add(buttonPanel, BorderLayout.SOUTH);
+
+                refreshButton.addActionListener(
+                                e -> loadApplications());
+                logoutButton.addActionListener(e -> {
+
+                        dispose();
+                        new LoginView();
                 });
 
-        viewButton.addActionListener(
-                e -> viewSelectedApplication());
+                newApplicationButton.addActionListener(e -> {
+                        new LoanForm(userId);
+                });
 
-        loadApplications();
+                viewButton.addActionListener(
+                                e -> viewSelectedApplication());
 
-        setVisible(true);
-    }
-    
-    
+                loadApplications();
 
-    private void loadApplications()
-{
-    tableModel.setRowCount(0);
-
-    try
-    {
-        // userId -> applicant
-        Applicant applicant =
-                ApplicantApiClient.getApplicantByUserId(userId);
-
-        if(applicant == null)
-        {
-            JOptionPane.showMessageDialog(
-                    this,
-                    "Applicant profile not found.");
-
-            return;
+                setVisible(true);
         }
 
-        // applicantId -> applications
-       List<LoanApplication> applications =
-        LoanApplicationApi.getApplicationsByApplicant(applicant.getApplicantId());
-        
-if (applications == null)
-{
-    applications = new ArrayList<>();
-}
+        private void loadApplications() {
+                tableModel.setRowCount(0);
 
-for (LoanApplication application : applications)
-{
-    Vehicle vehicle =
-            VehicleApiClient.getVehicleById(
-                    application.getVehicle_id());
+                try {
+                        // userId -> applicant
+                        Applicant applicant = ApplicantApiClient.getApplicantByUserId(userId);
 
-    String vehicleString =
-            vehicle.getYear()
-            + " "
-            + vehicle.getMake()
-            + " "
-            + vehicle.getModel();
+                        if (applicant == null) {
+                                JOptionPane.showMessageDialog(
+                                                this,
+                                                "Applicant profile not found.");
 
-    tableModel.addRow(
-            new Object[]
-            {
-                application.getApplication_id(),
-                applicant.getFullName(),
-                vehicleString,
-                String.format("$%.2f", application.getLoan_amount()),
-                String.format("$%.2f", application.getMonthly_payment()),
-                application.getStatus()
-            });
-}
-    }
-    catch(Exception e)
-    {
-        e.printStackTrace();
+                                return;
+                        }
 
-        JOptionPane.showMessageDialog(
-                this,
-                "Unable to load applications.");
-    }
-}
+                        // applicantId -> applications
+                        List<LoanApplication> applications = LoanApplicationApi
+                                        .getApplicationsByApplicant(applicant.getApplicantId());
 
-    private void viewSelectedApplication()
-    {
-        int row =
-                applicationTable.getSelectedRow();
+                        if (applications == null) {
+                                applications = new ArrayList<>();
+                        }
 
-        if(row == -1)
-        {
-            JOptionPane.showMessageDialog(
-                    this,
-                    "Select an application.");
+                        for (LoanApplication application : applications) {
+                                Vehicle vehicle = VehicleApiClient.getVehicleById(
+                                                application.getVehicle_id());
 
-            return;
+                                String vehicleString = vehicle.getYear()
+                                                + " "
+                                                + vehicle.getMake()
+                                                + " "
+                                                + vehicle.getModel();
+
+                                tableModel.addRow(
+                                                new Object[] {
+                                                                application.getApplication_id(),
+                                                                applicant.getFullName(),
+                                                                vehicleString,
+                                                                String.format("$%.2f", application.getLoan_amount()),
+                                                                String.format("$%.2f",
+                                                                                application.getMonthly_payment()),
+                                                                application.getStatus()
+                                                });
+                        }
+                } catch (Exception e) {
+                        e.printStackTrace();
+
+                        JOptionPane.showMessageDialog(
+                                        this,
+                                        "Unable to load applications.");
+                }
         }
 
-        int applicationId =
-                (Integer)
-                        tableModel.getValueAt(
+        private void viewSelectedApplication() {
+                int row = applicationTable.getSelectedRow();
+
+                if (row == -1) {
+                        JOptionPane.showMessageDialog(
+                                        this,
+                                        "Select an application.");
+
+                        return;
+                }
+
+                int applicationId = (Integer) tableModel.getValueAt(
                                 row,
                                 0);
-            //Open ViewForm
-            new ViewForm(applicationId);
-        
-    }
+                // Open ViewForm
+                new ViewForm(applicationId);
+
+        }
 }

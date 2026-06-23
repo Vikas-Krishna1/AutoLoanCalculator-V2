@@ -359,9 +359,6 @@ catch(Exception ex)
         this();
         this.officerId = officerId;
         this.applicationId = applicationId;
-        System.out.println(
-            "Constructor received "
-                    + applicationId);
         applicationIdField.setText(String.valueOf(applicationId));
         loadButton.doClick();
         setVisible(true);

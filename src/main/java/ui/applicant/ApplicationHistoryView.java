@@ -1,6 +1,6 @@
 package ui.applicant;
-import api.*;
 
+import api.*;
 
 import models.*;
 import javax.swing.*;
@@ -8,257 +8,215 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.util.List;
 
-public class ApplicationHistoryView extends JFrame
-{
-    private int userId;
-    private JFrame dashboard;
+public class ApplicationHistoryView extends JFrame {
+        private int userId;
+        private JFrame dashboard;
 
-    private JTable historyTable;
-    private DefaultTableModel tableModel;
+        private JTable historyTable;
+        private DefaultTableModel tableModel;
 
-    private JButton refreshButton;
-    private JButton viewButton;
-    private JButton backButton;
+        private JButton refreshButton;
+        private JButton viewButton;
+        private JButton backButton;
 
-    private JComboBox<String> statusFilter;
+        private JComboBox<String> statusFilter;
 
+        public ApplicationHistoryView(int userId, JFrame dashboard) {
+                this.userId = userId;
+                this.dashboard = dashboard;
 
-    public ApplicationHistoryView(int userId,JFrame dashboard)
-    {
-        this.userId = userId;
-        this.dashboard = dashboard; 
+                setTitle("Application History");
+                setSize(900, 600);
+                setLocationRelativeTo(null);
+                setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
-        setTitle("Application History");
-        setSize(900, 600);
-        setLocationRelativeTo(null);
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                setLayout(new BorderLayout());
 
-        setLayout(new BorderLayout());
+                JLabel title = new JLabel(
+                                "My Loan Applications",
+                                SwingConstants.CENTER);
 
-        JLabel title =
-                new JLabel(
-                        "My Loan Applications",
-                        SwingConstants.CENTER);
+                title.setFont(
+                                new Font(
+                                                "Arial",
+                                                Font.BOLD,
+                                                22));
 
-        title.setFont(
-                new Font(
-                        "Arial",
-                        Font.BOLD,
-                        22));
+                add(title, BorderLayout.NORTH);
 
-        add(title, BorderLayout.NORTH);
-
-        String[] columns =
-        {
-            "Date",
-            "Application ID",
-            "Applicant",
-            "Vehicle",
-            "Loan Amount",
-            "Monthly Payment",
-            "Status"
-        };
-
-        tableModel =
-                new DefaultTableModel(columns, 0)
-                {
-                    @Override
-                    public boolean isCellEditable(
-                            int row,
-                            int column)
-                    {
-                        return false;
-                    }
+                String[] columns = {
+                                "Date",
+                                "Application ID",
+                                "Applicant",
+                                "Vehicle",
+                                "Loan Amount",
+                                "Monthly Payment",
+                                "Status"
                 };
 
-        historyTable =
-                new JTable(tableModel);
+                tableModel = new DefaultTableModel(columns, 0) {
+                        @Override
+                        public boolean isCellEditable(
+                                        int row,
+                                        int column) {
+                                return false;
+                        }
+                };
 
-        historyTable.setRowHeight(25);
+                historyTable = new JTable(tableModel);
 
-        add(
-                new JScrollPane(historyTable),
-                BorderLayout.CENTER);
+                historyTable.setRowHeight(25);
 
-        JPanel bottomPanel =
-                new JPanel();
+                add(
+                                new JScrollPane(historyTable),
+                                BorderLayout.CENTER);
 
-        statusFilter =
-                new JComboBox<>(
-                        new String[]
-                        {
-                            "ALL",
-                            "PENDING",
-                            "APPROVED",
-                            "DENIED"
-                        });
+                JPanel bottomPanel = new JPanel();
 
-        refreshButton =
-                new JButton("Refresh");
+                statusFilter = new JComboBox<>(
+                                new String[] {
+                                                "ALL",
+                                                "PENDING",
+                                                "APPROVED",
+                                                "DENIED"
+                                });
 
-        viewButton =
-                new JButton("View Details");
-        backButton =
-                new JButton("Back");
+                refreshButton = new JButton("Refresh");
 
-        bottomPanel.add(backButton);
+                viewButton = new JButton("View Details");
+                backButton = new JButton("Back");
 
-        bottomPanel.add(
-                new JLabel("Status:"));
+                bottomPanel.add(backButton);
 
-        bottomPanel.add(statusFilter);
+                bottomPanel.add(
+                                new JLabel("Status:"));
 
-        bottomPanel.add(refreshButton);
+                bottomPanel.add(statusFilter);
 
-        bottomPanel.add(viewButton);
+                bottomPanel.add(refreshButton);
 
-        add(bottomPanel, BorderLayout.SOUTH);
+                bottomPanel.add(viewButton);
 
-        statusFilter.addActionListener(e ->
-        {
-            loadApplications();
-        });
+                add(bottomPanel, BorderLayout.SOUTH);
 
-        refreshButton.addActionListener(e ->
-        {
-            loadApplications();
-        });
+                statusFilter.addActionListener(e -> {
+                        loadApplications();
+                });
 
-        viewButton.addActionListener(e ->
-        {
-            openSelectedApplication();
-        });
+                refreshButton.addActionListener(e -> {
+                        loadApplications();
+                });
 
-        loadApplications();
+                viewButton.addActionListener(e -> {
+                        openSelectedApplication();
+                });
 
-        setVisible(true);
-        backButton.addActionListener(e->
-        {
-            dashboard.setVisible(true);
-            this.dispose();
-        }
-                
-        );
-    }
+                loadApplications();
 
-    private void loadApplications()
-{
-    tableModel.setRowCount(0);
+                setVisible(true);
+                backButton.addActionListener(e -> {
+                        dashboard.setVisible(true);
+                        this.dispose();
+                }
 
-    try
-    {
-        Applicant applicant =
-                ApplicantApiClient.getApplicantByUserId(userId);
-
-        if(applicant == null)
-        {
-            JOptionPane.showMessageDialog(
-                    this,
-                    "Applicant not found.");
-
-            return;
+                );
         }
 
-        List<LoanApplication> applications =
-                LoanApplicationApi.getApplicationsByApplicant(
-                        applicant.getApplicantId());
+        private void loadApplications() {
+                tableModel.setRowCount(0);
 
-        String selectedStatus =
-                (String) statusFilter.getSelectedItem();
+                try {
+                        Applicant applicant = ApplicantApiClient.getApplicantByUserId(userId);
 
-        for(LoanApplication application : applications)
-        {
-            if(selectedStatus != null
-                    && !selectedStatus.equalsIgnoreCase("ALL")
-                    && !application.getStatus()
-                    .equalsIgnoreCase(selectedStatus))
-            {
-                continue;
-            }
+                        if (applicant == null) {
+                                JOptionPane.showMessageDialog(
+                                                this,
+                                                "Applicant not found.");
 
-            Vehicle vehicle = null;
+                                return;
+                        }
 
-            try
-            {
-                vehicle =
-                        VehicleApiClient.getVehicleById(
-                                application.getVehicle_id());
-            }
-            catch(Exception ex)
-            {
-                ex.printStackTrace();
-            }
+                        List<LoanApplication> applications = LoanApplicationApi.getApplicationsByApplicant(
+                                        applicant.getApplicantId());
 
-            String vehicleName = "N/A";
+                        String selectedStatus = (String) statusFilter.getSelectedItem();
 
-            if(vehicle != null)
-            {
-                vehicleName =
-                        vehicle.getYear()
-                        + " "
-                        + vehicle.getMake()
-                        + " "
-                        + vehicle.getModel();
-            }
+                        for (LoanApplication application : applications) {
+                                if (selectedStatus != null
+                                                && !selectedStatus.equalsIgnoreCase("ALL")
+                                                && !application.getStatus()
+                                                                .equalsIgnoreCase(selectedStatus)) {
+                                        continue;
+                                }
 
-            String applicationDate =
-                    application.getApplication_date() == null
-                    ? "N/A"
-                    : application.getApplication_date().toString();
+                                Vehicle vehicle = null;
 
-            tableModel.addRow(
-                    new Object[]
-                    {
-                            applicationDate,
+                                try {
+                                        vehicle = VehicleApiClient.getVehicleById(
+                                                        application.getVehicle_id());
+                                } catch (Exception ex) {
+                                        ex.printStackTrace();
+                                }
 
-                            application.getApplication_id(),
+                                String vehicleName = "N/A";
 
-                            applicant.getFullName(),
+                                if (vehicle != null) {
+                                        vehicleName = vehicle.getYear()
+                                                        + " "
+                                                        + vehicle.getMake()
+                                                        + " "
+                                                        + vehicle.getModel();
+                                }
 
-                            vehicleName,
+                                String applicationDate = application.getApplication_date() == null
+                                                ? "N/A"
+                                                : application.getApplication_date().toString();
 
-                            String.format(
-                                    "$%.2f",
-                                    application.getLoan_amount()),
+                                tableModel.addRow(
+                                                new Object[] {
+                                                                applicationDate,
 
-                            String.format(
-                                    "$%.2f",
-                                    application.getMonthly_payment()),
+                                                                application.getApplication_id(),
 
-                            application.getStatus()
-                    });
-        }
-    }
-    catch(Exception e)
-    {
-        e.printStackTrace();
+                                                                applicant.getFullName(),
 
-        JOptionPane.showMessageDialog(
-                this,
-                "Unable to load application history.");
-    }
-}
+                                                                vehicleName,
 
-    private void openSelectedApplication()
-    {
-        int selectedRow =
-                historyTable.getSelectedRow();
+                                                                String.format(
+                                                                                "$%.2f",
+                                                                                application.getLoan_amount()),
 
-        if(selectedRow == -1)
-        {
-            JOptionPane.showMessageDialog(
-                    this,
-                    "Select an application first.");
+                                                                String.format(
+                                                                                "$%.2f",
+                                                                                application.getMonthly_payment()),
 
-            return;
+                                                                application.getStatus()
+                                                });
+                        }
+                } catch (Exception e) {
+                        e.printStackTrace();
+
+                        JOptionPane.showMessageDialog(
+                                        this,
+                                        "Unable to load application history.");
+                }
         }
 
-        int applicationId =
-                (Integer)
-                        tableModel.getValueAt(
+        private void openSelectedApplication() {
+                int selectedRow = historyTable.getSelectedRow();
+
+                if (selectedRow == -1) {
+                        JOptionPane.showMessageDialog(
+                                        this,
+                                        "Select an application first.");
+
+                        return;
+                }
+
+                int applicationId = (Integer) tableModel.getValueAt(
                                 selectedRow,
                                 1);
 
-        new ViewForm(applicationId);
-    }
+                new ViewForm(applicationId);
+        }
 }

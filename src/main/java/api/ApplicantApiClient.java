@@ -51,7 +51,6 @@ static {
         String json =
                 mapper.writeValueAsString(applicant);
 
-        System.out.println(json);
 
         try(OutputStream os =
                     connection.getOutputStream())
@@ -70,8 +69,6 @@ if (status >= 400)
     String error =
             new String(stream.readAllBytes());
 
-    System.out.println("Status = " + status);
-    System.out.println(error);
 
     throw new RuntimeException(error);
 }

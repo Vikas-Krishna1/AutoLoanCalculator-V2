@@ -12,7 +12,7 @@ import java.net.http.HttpResponse;
 
 public class LoanApplicationApi {
     private static final String BASE_URL =
-            "http://127.0.0.1:8000";
+            "https://autoloancalculator-v2.onrender.com";
 
     private static final HttpClient client =
             HttpClient.newHttpClient();

@@ -11,7 +11,7 @@ public class VehicleApiClient
 {
         
     private static final String BASE_URL =
-            "http://localhost:8000";
+            "https://autoloancalculator-v2.onrender.com";
 
     private static final Gson gson =
             new Gson();

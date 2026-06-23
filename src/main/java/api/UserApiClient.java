@@ -10,7 +10,7 @@ import java.net.http.HttpResponse;
 public class UserApiClient
 {
     private static final String BASE_URL =
-            "http://localhost:8000";
+            "https://autoloancalculator-v2.onrender.com";
 
     private static final HttpClient client =
             HttpClient.newHttpClient();

@@ -24,7 +24,7 @@ static {
             PropertyNamingStrategies.SNAKE_CASE);
 }
     private static final String BASE_URL =
-            "http://127.0.0.1:8000";
+            "https://autoloancalculator-v2.onrender.com";
 
 
     // =====================================

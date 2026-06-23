@@ -18,3 +18,11 @@ def create_vehicle(
         vin
 
     )
+##Get Vehicle by ID
+
+def get_vehicle_by_id_service(vehicle_id: int, db: Session):
+    return VehicleRepository.get_vehicle_by_id(vehicle_id, db)
+##Get all vehicles
+
+def get_all_vehicles_service(db: Session):
+    return VehicleRepository.get_all_vehicles(db)

@@ -5,7 +5,7 @@ class ApplicantCreate(BaseModel):
     full_name: str
     email: str
     phone: str
-    adress: str
+    address: str
     date_of_birth: str
     ssn: str
     employer_name: str

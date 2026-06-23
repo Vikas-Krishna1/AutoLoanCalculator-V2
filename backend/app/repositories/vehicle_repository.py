@@ -1,6 +1,5 @@
 from sqlalchemy.orm import Session
 from app.models.Vehicle import Vehicle
-from app.schemas import  vehicle_schema
 from app.repositories import vehicle_repository as vehicle_repository
 
 
@@ -29,9 +28,10 @@ class VehicleRepository:
         db.refresh(vehicle)
 
         return vehicle
-
-    def get_vehicle_by_id(self, vehicle_id: int):
-        return self.session.query(Vehicle).filter(Vehicle.vehicle_id == vehicle_id).first()
-    def get_all_vehicles(self):
-        
-        return self.session.query(Vehicle).all()
+    
+    @staticmethod
+    def get_vehicle_by_id( vehicle_id: int, session: Session):
+        return session.query(Vehicle).filter(Vehicle.vehicle_id == vehicle_id).first()
+    @staticmethod
+    def get_all_vehicles(db: Session):
+        return db.query(Vehicle).all()

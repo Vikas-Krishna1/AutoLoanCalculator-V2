@@ -85,5 +85,10 @@ def get_loanApplication_by_applicant_id_service(db: Session, id: int):
 ##get_by_vehicle_id
 def get_loanApplication_by_vehicle_id_service(db: Session, id: int):
 
+    
     return LoanApplicationRepository.get_by_vehicle_id(db, id)
+##Get all applications
+def get_all_applications_service(db: Session):
+
+    return LoanApplicationRepository.get_all(db)
 

@@ -7,7 +7,7 @@ from app.services.loan_application_service import create_loan_application
 from app.schemas.loan_assignment_schema import AssignOfficerRequest
 from app.services.loan_application_service import assign_officer
 from app.schemas.loan_review_schema import ReviewRequest
-from app.services.loan_application_service import approve_application, deny_application, get_pending_applications, get_approved, get_denied, get_under_review, get_loanApplication_by_id_service, get_loanApplication_by_vehicle_id_service, get_loanApplication_by_applicant_id_service
+from app.services.loan_application_service import approve_application, deny_application, get_pending_applications, get_approved, get_denied, get_under_review, get_loanApplication_by_id_service, get_loanApplication_by_vehicle_id_service, get_loanApplication_by_applicant_id_service, get_all_applications_service
 
 router = APIRouter()
 
@@ -63,6 +63,7 @@ def approve_loan(
 
 ):
 
+    
     return approve_application(
 
         db,
@@ -114,5 +115,9 @@ def get_loanApplication_by_vehicle_id(vehicle_id: int, db: Session = Depends(get
 @router.get("/loan/applicant/{applicant_id}")
 def get_loanApplication_by_applicant_id(applicant_id: int, db: Session = Depends(get_db)):
     return get_loanApplication_by_applicant_id_service(db, applicant_id)
+
+@router.get("/loan")
+def get_all_loan_applications(db: Session = Depends(get_db)):
+    return get_all_applications_service(db)
 
 

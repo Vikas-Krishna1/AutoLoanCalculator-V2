@@ -53,7 +53,7 @@ class LoanApplicationRepository:
     def get_by_id(db: Session, id: int):
         return db.query(LoanApplication).filter(
             LoanApplication.application_id == id
-        ).all()
+        ).first()
     @staticmethod
     def get_by_applicant_id(db: Session, id: int):
         return db.query(LoanApplication).filter(
@@ -74,12 +74,15 @@ class LoanApplicationRepository:
         loan = db.query(LoanApplication).filter(
         LoanApplication.application_id == application_id
     ).first()
+        print("Before Loan Ofifcer", loan.loan_officer_id)
         loan.loan_officer_id = officer_id
-
+        print("After Loan Ofifcer" , loan.loan_officer_id)
+        
         if loan.status == "Pending":
             loan.status = "UNDER_REVIEW"
         db.commit()
         db.refresh(loan)
+        print("refreshed")
         return loan
     @staticmethod
     def approve_application( db: Session,application_id: int,officer_id: int,notes: str):
@@ -135,7 +138,7 @@ class LoanApplicationRepository:
         ).all()
     
     ## Get Application by ID
-    def get_by_id(db: Session, id: int):
+    def get_all_by_application_id(db: Session, id: int):
         return db.query(LoanApplication).filter(
             LoanApplication.application_id == id
         ).first()
@@ -146,8 +149,6 @@ class LoanApplicationRepository:
             LoanApplication.vehicle_id == id
         ).first()
 
-    ## Get Application by ID
-    def get_by_applicant_id(db: Session, id: int):
-        return db.query(LoanApplication).filter(
-            LoanApplication.applicant_id == id
-        ).first()
+    #Get all Loans
+    def get_all(db: Session):
+        return db.query(LoanApplication).all()

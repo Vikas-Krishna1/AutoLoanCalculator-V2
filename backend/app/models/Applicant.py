@@ -11,7 +11,7 @@ class Applicant(Base):
     full_name = Column(String(100))
     email = Column(String(100))
     phone = Column(String(20))
-    adress = Column(String(100))
+    address = Column(String(100))
     date_of_birth = Column(String(20))
     ssn = Column(String(20))
     employer_name = Column(String(100))

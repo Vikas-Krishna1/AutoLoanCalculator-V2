@@ -1,194 +1,177 @@
-# Auto Loan Management System
+# AutoLoanCalculator 🚗
+
+> A full-stack auto loan management platform simulating the end-to-end workflow of a real-world automotive lending system — from application submission to officer review and approval.
+
+![Java](https://img.shields.io/badge/Java-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white)
+![FastAPI](https://img.shields.io/badge/FastAPI-005571?style=for-the-badge&logo=fastapi)
+![MySQL](https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=mysql&logoColor=white)
+![Maven](https://img.shields.io/badge/Maven-C71A36?style=for-the-badge&logo=apachemaven&logoColor=white)
+
+---
 
 ## Overview
 
-The Auto Loan Management System is a Java desktop application designed to streamline the automobile loan application process for applicants, loan officers, and administrators. The system provides role-based access, allowing users to securely submit, review, and manage loan applications through an intuitive graphical interface built with Java Swing.
-
-The application follows an object-oriented design and integrates with a MySQL database to maintain persistent records of users, applicants, vehicles, loans, and application statuses. Passwords are securely stored using BCrypt hashing to enhance authentication security.
+AutoLoanCalculator models a complete automotive lending workflow with two distinct user roles: **applicants**, who register, build profiles, submit vehicle and financing information, and track application status; and **loan officers**, who review assigned applications, approve or deny loans, leave review notes, and generate reports. The system is built as a desktop client backed by a cloud-hosted REST API and relational database — a deliberate architecture choice to demonstrate enterprise-style separation of concerns.
 
 ---
 
 ## Features
 
-### Applicant Portal
+### 👤 Applicant Workflow
+- Account registration and secure authentication
+- Profile and vehicle information management
+- Loan application submission
+- Real-time application status tracking
+- Application history view
 
-* Secure registration and login
-* Submit new auto loan applications
-* Automatic loan amount and monthly payment calculations
-* View current applications
-* Access application history
-* Review detailed application information
+### 🧑‍💼 Loan Officer Workflow
+- Role-based access to assigned application queues
+- Review of applicant and vehicle details
+- Approve / deny decision workflow with review notes
+- PDF report generation for processed applications
 
-### Loan Officer Portal
+### 🔐 Security
+- Industry-standard password hashing and verification
+- Role-based access control separating applicant and officer dashboards
+- Input validation throughout to prevent invalid or incomplete submissions
 
-* View application queue
-* Assign applications to themselves
-* Manage only assigned applications
-* Monitor approval statistics
-* Dashboard with performance metrics
-* Export reports to PDF
+---
 
-### Authentication and Security
+## Architecture
 
-* BCrypt password hashing
-* Session management
-* Role-based access control
-* Secure login validation
+The system is split into two independently deployable services:
 
-### Application Processing
+```
+┌─────────────────────┐         REST API          ┌──────────────────────┐
+│   Java Swing Client   │ ───────────────────────▶ │   FastAPI Backend     │
+│  (Desktop Application)│ ◀─────────────────────── │   (Business Logic)    │
+└─────────────────────┘                            └──────────┬───────────┘
+                                                                │
+                                                                ▼
+                                                       ┌──────────────────┐
+                                                       │   MySQL (Aiven)   │
+                                                       │  Relational Store  │
+                                                       └──────────────────┘
+```
 
-* Applicant information management
-* Vehicle information management
-* Auto loan calculations
-* Status tracking
-* Search and filtering capabilities
+**Frontend** — Java Swing multi-window desktop application with custom API client classes for consuming REST endpoints and performing CRUD operations against users, applicants, vehicles, officers, and loan applications.
+
+**Backend** — FastAPI service organized into modular layers: routes, schemas, services, repositories, models, and database configuration. SQLAlchemy handles ORM-based database interaction with a clean repository pattern.
+
+**Database** — MySQL with normalized relational tables and foreign key constraints linking applicants, vehicles, loan applications, and officers — ensuring referential integrity across multi-step workflows.
 
 ---
 
 ## Tech Stack
 
-### Language
+| Layer | Technology |
+|-------|-----------|
+| Desktop Client | Java, Swing |
+| Backend API | FastAPI (Python) |
+| ORM | SQLAlchemy |
+| Database | MySQL |
+| Build Tool (Java) | Maven |
+| Backend Deployment | Render |
+| Database Hosting | Aiven (managed cloud MySQL) |
+| Version Control | Git, GitHub |
 
-* Java
+---
 
-### GUI Framework
+## Getting Started
 
-* Java Swing
+### Prerequisites
+- Java 17+ and Maven
+- Python 3.10+
+- MySQL instance (local or cloud)
 
-### Database
+### Backend Setup
 
-* MySQL
+```bash
+# Clone the repository
+git clone https://github.com/vikaskrishna/autoloancalculator.git
+cd autoloancalculator/backend
 
-### Database Connectivity
+# Create virtual environment
+python -m venv venv
+source venv/bin/activate  # or venv\Scripts\activate on Windows
 
-* JDBC
+# Install dependencies
+pip install -r requirements.txt
 
-### Security
+# Configure environment variables
+cp .env.example .env
+# Add your MySQL connection string and secrets
 
-* jBCrypt
+# Run the API
+uvicorn main:app --reload
+```
 
-### PDF Reporting
+### Desktop Client Setup
 
-* iText PDF
+```bash
+cd autoloancalculator/client
 
-### Build Tool
+# Build with Maven
+mvn clean package
 
-* Maven
+# Run the generated JAR
+java -jar target/autoloancalculator-client.jar
+```
 
-### Architecture
+---
 
-* Object-Oriented Programming (OOP)
-* MVC-inspired design
+## Environment Variables
+
+```env
+DATABASE_URL=mysql+pymysql://user:password@host:port/dbname
+SECRET_KEY=your_secret_key
+ACCESS_TOKEN_EXPIRE_MINUTES=30
+```
 
 ---
 
 ## Project Structure
 
 ```
-src
-├── db
-│   └── DatabaseManager.java
-├── models
-│   ├── Applicant.java
-│   ├── AutoLoan.java
-│   ├── LoanApplication.java
-│   ├── User.java
-│   └── Vehicle.java
-├── services
-│   └── LoanCalculator.java
-├── ui
-│   ├── login
-│   ├── register
-│   ├── applicant
-│   ├── officer
-│   ├── admin
-│   └── table
-├── utils
-│   ├── passwordUtils.java
-│   └── PDFExporter.java
-└── Main
-    └── Main.java
+autoloancalculator/
+├── backend/
+│   ├── routes/          # API endpoint definitions
+│   ├── schemas/         # Pydantic request/response models
+│   ├── services/        # Business logic layer
+│   ├── repositories/    # Database access layer
+│   ├── models/          # SQLAlchemy ORM models
+│   ├── utils/           # Shared utilities (hashing, auth, etc.)
+│   └── main.py
+├── client/
+│   ├── src/
+│   │   ├── ui/          # Swing windows and dashboards
+│   │   └── api/         # API client classes (CRUD consumers)
+│   └── pom.xml
+└── README.md
 ```
 
 ---
 
-## Database Tables
+## Deployment
 
-* users
-* applicant
-* vehicle
-* auto_loan
-* loan_application
-* loan_officer
-* admin
+- **Backend** — Deployed as a publicly accessible web service on Render
+- **Database** — Hosted on Aiven's managed MySQL cloud platform
+- **Client** — Packaged as a runnable Maven JAR configured to communicate with production API endpoints
 
 ---
 
-## Major Concepts Implemented
+## Testing & Validation
 
-* Encapsulation
-* Inheritance
-* Composition
-* Separation of concerns
-* Event-driven programming
-* JDBC database operations
-* Password hashing
-* Session management
-* Input validation
-* PDF generation
-
----
-
-## Running the Project
-
-### Clone the Repository
-
-```bash
-git clone https://github.com/YOUR_USERNAME/AutoLoanCalc.git
-```
-
-### Navigate to the Project
-
-```bash
-cd AutoLoanCalc
-```
-
-### Install Dependencies
-
-```bash
-mvn clean install
-```
-
-### Run the Application
-
-```bash
-mvn exec:java -Dexec.mainClass="src.Main.Main"
-```
-
----
-
-## Future Enhancements
-
-* Admin dashboard and user management
-* Reassign applications between loan officers
-* Email notifications
-* Credit score integration
-* Advanced reporting and analytics
-* Search optimization
-* REST API support
-* Migration to JavaFX or web-based frontend
+End-to-end functionality has been verified across:
+- Applicant registration and profile creation
+- Vehicle registration and loan submission
+- Application history tracking
+- Officer review queues and approval/denial workflows
+- PDF report generation
+- Cloud database operations under production configuration
 
 ---
 
 ## Author
 
-**Vikas S. Krishna**
-
-B.S. Computer Science
-Stony Brook University
-
----
-
-## License
-
-This project is intended for educational purposes and portfolio demonstration.
+**Vikas Krishna** — [@vikaskrishna](https://github.com/vikaskrishna)
